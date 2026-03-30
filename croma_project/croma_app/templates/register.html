@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Croma | Register</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <header class="site-header">
+        <div class="nav-wrap">
+            <a class="brand" href="{% url 'login' %}">CROMA STORE</a>
+            <nav class="nav-links">
+                <a href="{% url 'login' %}">Login</a>
+                <a class="active" href="{% url 'register' %}">Register</a>
+            </nav>
+        </div>
+    </header>
+
+    {% if messages %}
+    <div class="toast-stack">
+        {% for message in messages %}
+        <div class="toast toast-{% if message.tags %}{{ message.tags }}{% else %}info{% endif %}">
+            <p>{{ message }}</p>
+            <button type="button" class="toast-close" aria-label="Close">&times;</button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <main class="page">
+        <section class="hero auth-wrapper">
+            <div class="auth-card">
+                <span class="eyebrow">Create Account</span>
+                <h1>Register to access Croma operations</h1>
+                <p>After signup, you will be logged in automatically and redirected to dashboard.</p>
+
+                {% if error %}
+                <p class="error-text">{{ error }}</p>
+                {% endif %}
+
+                <form method="post" class="auth-form">
+                    {% csrf_token %}
+
+                    <div class="field">
+                        <label for="username">Username</label>
+                        <input id="username" name="username" type="text" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="email">Email</label>
+                        <input id="email" name="email" type="email" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="password">Password</label>
+                        <input id="password" name="password" type="password" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="confirm_password">Confirm Password</label>
+                        <input id="confirm_password" name="confirm_password" type="password" required>
+                    </div>
+
+                    <button type="submit">Register</button>
+                </form>
+
+                <p class="auth-note">Already registered? <a href="{% url 'login' %}">Go to login</a></p>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        (function () {
+            const toasts = document.querySelectorAll(".toast");
+            toasts.forEach(function (toast) {
+                const closeBtn = toast.querySelector(".toast-close");
+                if (closeBtn) {
+                    closeBtn.addEventListener("click", function () {
+                        toast.remove();
+                    });
+                }
+                setTimeout(function () {
+                    if (toast.parentNode) {
+                        toast.remove();
+                    }
+                }, 3200);
+            });
+        })();
+    </script>
+</body>
+</html>

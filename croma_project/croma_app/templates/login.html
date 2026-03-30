@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Croma | Login</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <header class="site-header">
+        <div class="nav-wrap">
+            <a class="brand" href="{% url 'login' %}">CROMA STORE</a>
+            <nav class="nav-links">
+                <a class="active" href="{% url 'login' %}">Login</a>
+                <a href="{% url 'register' %}">Register</a>
+            </nav>
+        </div>
+    </header>
+
+    {% if messages %}
+    <div class="toast-stack">
+        {% for message in messages %}
+        <div class="toast toast-{% if message.tags %}{{ message.tags }}{% else %}info{% endif %}">
+            <p>{{ message }}</p>
+            <button type="button" class="toast-close" aria-label="Close">&times;</button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <main class="page">
+        <section class="hero auth-wrapper">
+            <div class="auth-card">
+                <span class="eyebrow">Welcome Back</span>
+                <h1>Sign in to manage inventory</h1>
+                <p>Login is required before viewing or performing any product operation.</p>
+
+                {% if error %}
+                <p class="error-text">{{ error }}</p>
+                {% endif %}
+
+                <form method="post" class="auth-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="next" value="{{ next }}">
+
+                    <div class="field">
+                        <label for="username">Username</label>
+                        <input id="username" name="username" type="text" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="password">Password</label>
+                        <input id="password" name="password" type="password" required>
+                    </div>
+
+                    <button type="submit">Login</button>
+                </form>
+
+                <p class="auth-note">New user? <a href="{% url 'register' %}">Create an account</a></p>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        (function () {
+            const toasts = document.querySelectorAll(".toast");
+            toasts.forEach(function (toast) {
+                const closeBtn = toast.querySelector(".toast-close");
+                if (closeBtn) {
+                    closeBtn.addEventListener("click", function () {
+                        toast.remove();
+                    });
+                }
+                setTimeout(function () {
+                    if (toast.parentNode) {
+                        toast.remove();
+                    }
+                }, 3200);
+            });
+        })();
+    </script>
+</body>
+</html>

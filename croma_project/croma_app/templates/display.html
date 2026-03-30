@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Croma | Products</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <header class="site-header">
+        <div class="nav-wrap">
+            <a class="brand" href="{% url 'home' %}">CROMA STORE</a>
+            <nav class="nav-links">
+                <a href="{% url 'home' %}">Home</a>
+                <a class="active" href="{% url 'display' %}">Products</a>
+                <a href="{% url 'insert' %}">Add Product</a>
+                <a href="{% url 'logout' %}">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    {% if messages %}
+    <div class="toast-stack">
+        {% for message in messages %}
+        <div class="toast toast-{% if message.tags %}{{ message.tags }}{% else %}info{% endif %}">
+            <p>{{ message }}</p>
+            <button type="button" class="toast-close" aria-label="Close">&times;</button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <main class="page">
+        <section class="hero">
+            <span class="eyebrow">All Products</span>
+            <h1>Inventory Overview</h1>
+            <p>Track product details and quickly perform update or delete actions from one place.</p>
+
+            <section class="kpis">
+                <article class="kpi">
+                    <p class="kpi-label">Total Products</p>
+                    <p class="kpi-value">{{ data|length }}</p>
+                </article>
+                <article class="kpi">
+                    <p class="kpi-label">Management</p>
+                    <p class="kpi-value">Live</p>
+                </article>
+                <article class="kpi">
+                    <p class="kpi-label">System</p>
+                    <p class="kpi-value">Django ORM</p>
+                </article>
+            </section>
+
+            <div class="panel table-wrap">
+                <div class="panel-head">
+                    <h2 class="panel-title">Product Table</h2>
+                    <a class="btn btn-primary" href="{% url 'insert' %}">+ Add Product</a>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Category</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for p in data %}
+                        <tr>
+                            <td>{{ p.p_id }}</td>
+                            <td>{{ p.p_name }}</td>
+                            <td><span class="chip">{{ p.category }}</span></td>
+                            <td>Rs. {{ p.price }}</td>
+                            <td>{{ p.quantity }}</td>
+                            <td>
+                                <div class="actions">
+                                    <a class="btn btn-secondary" href="{% url 'update' p.p_id %}">Update</a>
+                                    <button type="button" class="btn btn-danger open-delete-modal" data-delete-url="{% url 'delete' p.p_id %}" data-product-name="{{ p.p_name }}">Delete</button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td class="empty" colspan="6">No products found. Add your first product from the Insert page.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <div id="deleteModal" class="delete-modal" role="dialog" aria-modal="true" aria-labelledby="deleteModalTitle">
+        <div class="delete-card">
+            <h3 id="deleteModalTitle" class="delete-title">Delete product?</h3>
+            <p class="delete-text">This action cannot be undone. <strong id="deleteProductName"></strong> will be permanently removed.</p>
+            <div class="delete-actions">
+                <button type="button" class="btn btn-secondary" id="cancelDeleteBtn">Cancel</button>
+                <a href="#" class="btn btn-danger" id="confirmDeleteBtn">Yes, Delete</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            const toasts = document.querySelectorAll(".toast");
+            toasts.forEach(function (toast) {
+                const closeBtn = toast.querySelector(".toast-close");
+                if (closeBtn) {
+                    closeBtn.addEventListener("click", function () {
+                        toast.remove();
+                    });
+                }
+                setTimeout(function () {
+                    if (toast.parentNode) {
+                        toast.remove();
+                    }
+                }, 3200);
+            });
+
+            const modal = document.getElementById("deleteModal");
+            const productName = document.getElementById("deleteProductName");
+            const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
+            const cancelDeleteBtn = document.getElementById("cancelDeleteBtn");
+            const openButtons = document.querySelectorAll(".open-delete-modal");
+
+            function closeModal() {
+                modal.classList.remove("show");
+            }
+
+            openButtons.forEach(function (button) {
+                button.addEventListener("click", function () {
+                    confirmDeleteBtn.href = button.dataset.deleteUrl;
+                    productName.textContent = button.dataset.productName || "This product";
+                    modal.classList.add("show");
+                });
+            });
+
+            cancelDeleteBtn.addEventListener("click", closeModal);
+            modal.addEventListener("click", function (event) {
+                if (event.target === modal) {
+                    closeModal();
+                }
+            });
+            document.addEventListener("keydown", function (event) {
+                if (event.key === "Escape" && modal.classList.contains("show")) {
+                    closeModal();
+                }
+            });
+        })();
+    </script>
+</body>
+</html>

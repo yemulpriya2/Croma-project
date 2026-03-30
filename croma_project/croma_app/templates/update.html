@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Croma | Update Product</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <header class="site-header">
+        <div class="nav-wrap">
+            <a class="brand" href="{% url 'home' %}">CROMA STORE</a>
+            <nav class="nav-links">
+                <a href="{% url 'home' %}">Home</a>
+                <a class="active" href="{% url 'display' %}">Products</a>
+                <a href="{% url 'insert' %}">Add Product</a>
+                <a href="{% url 'logout' %}">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    {% if messages %}
+    <div class="toast-stack">
+        {% for message in messages %}
+        <div class="toast toast-{% if message.tags %}{{ message.tags }}{% else %}info{% endif %}">
+            <p>{{ message }}</p>
+            <button type="button" class="toast-close" aria-label="Close">&times;</button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <main class="page">
+        <section class="hero">
+            <span class="eyebrow">Edit Entry</span>
+            <h1>Update Product #{{ data.p_id }}</h1>
+            <p>Modify the details and submit to save changes for this product.</p>
+
+            <div class="form-shell">
+                <form class="panel" method="post">
+                    {% csrf_token %}
+                    <div class="form-grid">
+                        <div class="field">
+                            <label for="p_id">Product ID</label>
+                            <input type="number" id="p_id" value="{{ data.p_id }}" disabled>
+                        </div>
+
+                        <div class="field">
+                            <label for="p_name">Product Name</label>
+                            <input type="text" id="p_name" name="p_name" value="{{ data.p_name }}" required>
+                        </div>
+
+                        <div class="field">
+                            <label for="category">Category</label>
+                            <input type="text" id="category" name="category" value="{{ data.category }}" required>
+                        </div>
+
+                        <div class="field">
+                            <label for="price">Price</label>
+                            <input type="number" id="price" name="price" step="0.01" min="0" value="{{ data.price }}" required>
+                        </div>
+
+                        <div class="field field-wide">
+                            <label for="quantity">Quantity</label>
+                            <input type="number" id="quantity" name="quantity" min="0" value="{{ data.quantity }}" required>
+                        </div>
+                    </div>
+
+                    <div class="actions actions-inline">
+                        <button type="submit">Save Changes</button>
+                        <a class="btn btn-secondary" href="{% url 'display' %}">Cancel</a>
+                    </div>
+                </form>
+
+                <aside class="tips">
+                    <h3>Update Tips</h3>
+                    <ul>
+                        <li>Keep product name clear and searchable.</li>
+                        <li>Set accurate prices with decimals if needed.</li>
+                        <li>Update quantity to reflect current stock.</li>
+                    </ul>
+                </aside>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        (function () {
+            const toasts = document.querySelectorAll(".toast");
+            toasts.forEach(function (toast) {
+                const closeBtn = toast.querySelector(".toast-close");
+                if (closeBtn) {
+                    closeBtn.addEventListener("click", function () {
+                        toast.remove();
+                    });
+                }
+                setTimeout(function () {
+                    if (toast.parentNode) {
+                        toast.remove();
+                    }
+                }, 3200);
+            });
+        })();
+    </script>
+</body>
+</html>

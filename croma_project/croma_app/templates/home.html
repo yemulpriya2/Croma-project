@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Croma | Home</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <header class="site-header">
+        <div class="nav-wrap">
+            <a class="brand" href="{% url 'home' %}">CROMA STORE</a>
+            <nav class="nav-links">
+                <a class="active" href="{% url 'home' %}">Home</a>
+                <a href="{% url 'display' %}">Products</a>
+                <a href="{% url 'insert' %}">Add Product</a>
+                <a href="{% url 'logout' %}">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    {% if messages %}
+    <div class="toast-stack">
+        {% for message in messages %}
+        <div class="toast toast-{% if message.tags %}{{ message.tags }}{% else %}info{% endif %}">
+            <p>{{ message }}</p>
+            <button type="button" class="toast-close" aria-label="Close">&times;</button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <main class="page">
+        <section class="hero">
+            <div class="hero-grid">
+                <div>
+                    <span class="eyebrow">Inventory Dashboard</span>
+                    <h1>Manage your Croma products with style and speed.</h1>
+                    <p>Use the navigation above to add, view, update, and delete product entries. This interface is fully connected to your existing Django backend.</p>
+
+                    <div class="panel">
+                        <div class="actions">
+                            <a class="btn btn-primary" href="{% url 'display' %}">Open Product List</a>
+                            <a class="btn btn-secondary" href="{% url 'insert' %}">Insert New Item</a>
+                        </div>
+                    </div>
+                </div>
+
+                <aside class="hero-art">
+                    <div>
+                        <h3>Smart Store Control</h3>
+                        <p>Keep product records clean and your workflow fast with one polished management interface.</p>
+                    </div>
+                    <span class="hero-pill">Croma Admin Space</span>
+                </aside>
+            </div>
+
+            <div class="tile-grid">
+                <article class="tile">
+                    <h3>Fast Insert</h3>
+                    <p>Add inventory in seconds using a clean and structured form.</p>
+                </article>
+                <article class="tile">
+                    <h3>Quick Update</h3>
+                    <p>Edit product details from the products table with one click.</p>
+                </article>
+                <article class="tile">
+                    <h3>Safe Delete</h3>
+                    <p>Remove products with clear visual actions and a confirmation prompt.</p>
+                </article>
+            </div>
+
+            <p class="page-footer">Built for clean inventory management.</p>
+        </section>
+    </main>
+
+    <script>
+        (function () {
+            const toasts = document.querySelectorAll(".toast");
+            toasts.forEach(function (toast) {
+                const closeBtn = toast.querySelector(".toast-close");
+                if (closeBtn) {
+                    closeBtn.addEventListener("click", function () {
+                        toast.remove();
+                    });
+                }
+                setTimeout(function () {
+                    if (toast.parentNode) {
+                        toast.remove();
+                    }
+                }, 3200);
+            });
+        })();
+    </script>
+</body>
+</html>
